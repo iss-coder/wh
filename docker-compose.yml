@@ -1,27 +1,31 @@
 version: '3.8'
-
 services:
-    mongodb:
-        container_name: mongodb
-        image: mongo:latest
-        restart: unless-stopped
-        ports:
-            - 27017:27017
-        volumes:
-            - db:/data/db
-    app:
-        container_name: api
-         image:akky2648/whatsapp-api-nodejs:latest
-        depends_on:
-            - mongodb
-        restart: unless-stopped
-        env_file: .env
-        ports:
-            - 3333:3333
-        
-        volumes:
-            - ./:/home/node/app
-            - /home/node/app/node_modules/
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - db:/data/db  # Corrected indentation for volumes
+    networks:
+      - my-network
 
-volumes:
-    db:
+  app:
+    container_name: api
+    image: akky2648/whatsapp-api-nodejs:latest
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3333:3333"
+    networks:
+      - my-network
+
+volumes:  # Added volumes definition outside services
+  db:
+
+networks:
+  my-network:
+    driver: bridge
